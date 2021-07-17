@@ -1,4 +1,4 @@
-# Databases-Structure-Unification-
+# Databases-Structure-Unification
 
 It is usually necessary to have different samples of a database with unique structure in a server. Those databases must have one schema, but you may make some changes in one and forget to make those changes in the rest of them. There are some tools for unifying the databases structure, but I found no pure sql query for that purpose.
 
