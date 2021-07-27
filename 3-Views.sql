@@ -54,7 +54,67 @@ Close		Cursor_AddViews
 Deallocate	Cursor_AddViews
 End /*AddViews*/
 
---********** 3.2 Delete Viwe
+--********** 3.2 Update Viwe
+Begin /*UpdateViews*/
+If Object_ID ('tempdb.dbo.#TempBase', 'U') Is Not Null Drop Table #TempBase;
+If Object_ID ('tempdb.dbo.#TempDestination', 'U') Is Not Null Drop Table #TempDestination;
+If Object_ID ('tempdb.dbo.#TempCursor', 'U') Is Not Null Drop Table #TempCursor;
+
+Select	c.*, v.VIEW_DEFINITION 
+Into	#TempBase
+From	{Base}.INFORMATION_SCHEMA.VIEWS as v join
+		{Base}.INFORMATION_SCHEMA.VIEW_COLUMN_USAGE as c on v.TABLE_NAME=c.VIEW_NAME
+
+Select	c.*,v.VIEW_DEFINITION 
+Into	#TempDestination
+From	{Destination}.INFORMATION_SCHEMA.VIEWS as v join
+		{Destination}.INFORMATION_SCHEMA.VIEW_COLUMN_USAGE as c on v.TABLE_NAME=c.VIEW_NAME
+SELECT * INTO #TempCursor FROM (
+Select	Distinct TABLE_NAME,COLUMN_NAME,VIEW_NAME
+From	#TempBase
+Except
+Select	Distinct TABLE_NAME,COLUMN_NAME,VIEW_NAME
+From	#TempDestination
+union
+Select	Distinct TABLE_NAME,COLUMN_NAME,VIEW_NAME
+From	#TempDestination
+Except
+Select	Distinct TABLE_NAME,COLUMN_NAME,VIEW_NAME
+From	#TempBase)as tmp
+Declare @ViewnameUV nvarchar(50)
+Declare @TABLE_NAMEUV nvarchar(50)
+Declare @COLUMN_NAMEUV nvarchar(50)
+Declare @rowUV int
+Set @rowUV = 0
+
+Declare Cursor_UpdateViews Cursor For
+select Distinct VIEW_NAME from #TempCursor
+Open		Cursor_UpdateViews
+Fetch From	Cursor_UpdateViews
+	Into	@ViewnameUV
+
+While	@@Fetch_STATUS=0
+	Begin
+		Declare @View_nameUV SYSNAME
+		Select @View_nameUV ='dbo.'+ @ViewnameUV
+		Declare @UpdateViews NVARCHAR(MAX) = ''
+		Select @UpdateViews =
+			'DROP VIEW '+@View_nameUV
+			+' '+ c.VIEW_DEFINITION
+		From #TempBase as c
+		Where c.VIEW_NAME = @ViewnameUV
+		
+		PRINT @UpdateViews
+		--EXEC sys.sp_executesql @AddTable
+		Fetch Next From	Cursor_UpdateViews
+		Into @ViewnameUV
+	End
+Close		Cursor_UpdateViews
+Deallocate	Cursor_UpdateViews
+
+End /*UpdateViews*/
+
+--********** 3.3 Delete Viwe
 Begin /*DeleteViews*/
 
 If Object_ID ('tempdb.dbo.#TempBase', 'U') Is Not Null Drop Table #TempBase;
