@@ -215,7 +215,6 @@ Deallocate	cursor_AddFields
 
 End /*AddField*/
 
---„Ãœœ çò ‘Êœ
 --********** 2.2 Update Filed
 Begin /*UpdateField*/
 If Object_ID ('tempdb.dbo.#TempBase', 'U') Is Not Null Drop Table #TempBase;
