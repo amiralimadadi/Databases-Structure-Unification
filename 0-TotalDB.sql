@@ -472,7 +472,6 @@ Close		Cursor_AddViews
 Deallocate	Cursor_AddViews
 End /*AddViews*/
 
---„Ãœœ çò ‘Êœ
 --********** 3.2 Update Viwe
 Begin /*UpdateViews*/
 If Object_ID ('tempdb.dbo.#TempBase', 'U') Is Not Null Drop Table #TempBase;
