@@ -6,13 +6,13 @@ If Object_ID ('tempdb.dbo.#TempDestination', 'U') Is Not Null Drop Table #TempDe
 
 Select * 
 Into	#TempBase
-From	Watch.INFORMATION_SCHEMA.COLUMNS
-Where	TABLE_NAME Not In (Select TABLE_NAME From Watch.INFORMATION_SCHEMA.VIEWS)
+From	{Base}.INFORMATION_SCHEMA.COLUMNS
+Where	TABLE_NAME Not In (Select TABLE_NAME From {Base}.INFORMATION_SCHEMA.VIEWS)
 
 Select	* 
 Into	#TempDestination
-From	WatchBU.INFORMATION_SCHEMA.COLUMNS
-Where	TABLE_NAME Not In (Select TABLE_NAME From WatchBU.INFORMATION_SCHEMA.VIEWS)
+From	{Destination}.INFORMATION_SCHEMA.COLUMNS
+Where	TABLE_NAME Not In (Select TABLE_NAME From {Destination}.INFORMATION_SCHEMA.VIEWS)
 
 Select Distinct TABLE_NAME
 From	#TempBase
@@ -90,13 +90,13 @@ If Object_ID ('tempdb.dbo.#TempDestination', 'U') Is Not Null Drop Table #TempDe
 
 Select	* 
 Into	#TempBase
-From	Watch.INFORMATION_SCHEMA.COLUMNS
-Where	TABLE_NAME not in (Select TABLE_NAME From Watch.INFORMATION_SCHEMA.VIEWS)
+From	{Base}.INFORMATION_SCHEMA.COLUMNS
+Where	TABLE_NAME not in (Select TABLE_NAME From {Base}.INFORMATION_SCHEMA.VIEWS)
 
 Select	* 
 Into	#TempDestination
-From	WatchBU.INFORMATION_SCHEMA.COLUMNS
-Where	TABLE_NAME not in (Select TABLE_NAME From WatchBU.INFORMATION_SCHEMA.VIEWS)
+From	{Destination}.INFORMATION_SCHEMA.COLUMNS
+Where	TABLE_NAME not in (Select TABLE_NAME From {Destination}.INFORMATION_SCHEMA.VIEWS)
 
 Select	Distinct TABLE_NAME
 From	#TempDestination
@@ -138,11 +138,11 @@ If Object_ID ('tempdb.dbo.#TempBase', 'U') Is Not Null Drop Table #TempBase;
 If Object_ID ('tempdb.dbo.#TempDestination', 'U') Is Not Null Drop Table #TempDestination;
 Select * 
 Into #TempBase
-From Watch.INFORMATION_SCHEMA.COLUMNS
+From {Base}.INFORMATION_SCHEMA.COLUMNS
 
 Select * 
 Into #TempDestination
-From WatchBU.INFORMATION_SCHEMA.COLUMNS
+From {Destination}.INFORMATION_SCHEMA.COLUMNS
 
 Select Distinct TABLE_NAME,COLUMN_NAME
 From	#TempBase
@@ -221,30 +221,30 @@ If Object_ID ('tempdb.dbo.#TempBase', 'U') Is Not Null Drop Table #TempBase;
 If Object_ID ('tempdb.dbo.#TempDestination', 'U') Is Not Null Drop Table #TempDestination;
 Select * 
 Into #TempBase
-From Watch.INFORMATION_SCHEMA.COLUMNS
+From {Base}.INFORMATION_SCHEMA.COLUMNS
 WHERE TABLE_NAME+COLUMN_NAME not in (Select TABLE_NAME+COLUMN_NAME
-From	Watch.INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE
+From	{Base}.INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE
 union 
 Select		t.name+col.name
-From		Watch.sys.indexes ind Inner Join 
-			Watch.sys.index_columns ic On ind.object_id = ic.object_id and ind.index_id = ic.index_id Inner Join
-			Watch.sys.columns col On ic.object_id = col.object_id and ic.column_id = col.column_id Inner Join 
-			Watch.sys.tables t On ind.object_id = t.object_id 
+From		{Base}.sys.indexes ind Inner Join 
+			{Base}.sys.index_columns ic On ind.object_id = ic.object_id and ind.index_id = ic.index_id Inner Join
+			{Base}.sys.columns col On ic.object_id = col.object_id and ic.column_id = col.column_id Inner Join 
+			{Base}.sys.tables t On ind.object_id = t.object_id 
 Where		ind.is_primary_key = 0 And
 			ind.is_unique = 0 And
 			ind.is_unique_constraint = 0 And
 			t.is_ms_shipped = 0  )
 Select * 
 Into #TempDestination
-From WatchBU.INFORMATION_SCHEMA.COLUMNS
+From {Destination}.INFORMATION_SCHEMA.COLUMNS
 WHERE TABLE_NAME+COLUMN_NAME not in (Select TABLE_NAME+COLUMN_NAME
-From	WatchBU.INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE
+From	{Destination}.INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE
 union 
 Select		t.name+col.name
-From		WatchBU.sys.indexes ind Inner Join 
-			WatchBU.sys.index_columns ic On ind.object_id = ic.object_id and ind.index_id = ic.index_id Inner Join
-			WatchBU.sys.columns col On ic.object_id = col.object_id and ic.column_id = col.column_id Inner Join 
-			WatchBU.sys.tables t On ind.object_id = t.object_id 
+From		{Destination}.sys.indexes ind Inner Join 
+			{Destination}.sys.index_columns ic On ind.object_id = ic.object_id and ind.index_id = ic.index_id Inner Join
+			{Destination}.sys.columns col On ic.object_id = col.object_id and ic.column_id = col.column_id Inner Join 
+			{Destination}.sys.tables t On ind.object_id = t.object_id 
 Where		ind.is_primary_key = 0 And
 			ind.is_unique = 0 And
 			ind.is_unique_constraint = 0 And
@@ -336,30 +336,30 @@ If Object_ID ('tempdb.dbo.#TempBase', 'U') Is Not Null Drop Table #TempBase;
 If Object_ID ('tempdb.dbo.#TempDestination', 'U') Is Not Null Drop Table #TempDestination;
 Select * 
 Into #TempBase
-From Watch.INFORMATION_SCHEMA.COLUMNS
+From {Base}.INFORMATION_SCHEMA.COLUMNS
 WHERE TABLE_NAME+COLUMN_NAME  in (Select TABLE_NAME+COLUMN_NAME
-From	Watch.INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE
+From	{Base}.INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE
 union 
 Select		t.name+col.name
-From		Watch.sys.indexes ind Inner Join 
-			Watch.sys.index_columns ic On ind.object_id = ic.object_id and ind.index_id = ic.index_id Inner Join
-			Watch.sys.columns col On ic.object_id = col.object_id and ic.column_id = col.column_id Inner Join 
-			Watch.sys.tables t On ind.object_id = t.object_id 
+From		{Base}.sys.indexes ind Inner Join 
+			{Base}.sys.index_columns ic On ind.object_id = ic.object_id and ind.index_id = ic.index_id Inner Join
+			{Base}.sys.columns col On ic.object_id = col.object_id and ic.column_id = col.column_id Inner Join 
+			{Base}.sys.tables t On ind.object_id = t.object_id 
 Where		ind.is_primary_key = 0 And
 			ind.is_unique = 0 And
 			ind.is_unique_constraint = 0 And
 			t.is_ms_shipped = 0  )
 Select * 
 Into #TempDestination
-From WatchBU.INFORMATION_SCHEMA.COLUMNS
+From {Destination}.INFORMATION_SCHEMA.COLUMNS
 WHERE TABLE_NAME+COLUMN_NAME  in (Select TABLE_NAME+COLUMN_NAME
-From	WatchBU.INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE
+From	{Destination}.INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE
 union 
 Select		t.name+col.name
-From		WatchBU.sys.indexes ind Inner Join 
-			WatchBU.sys.index_columns ic On ind.object_id = ic.object_id and ind.index_id = ic.index_id Inner Join
-			WatchBU.sys.columns col On ic.object_id = col.object_id and ic.column_id = col.column_id Inner Join 
-			WatchBU.sys.tables t On ind.object_id = t.object_id 
+From		{Destination}.sys.indexes ind Inner Join 
+			{Destination}.sys.index_columns ic On ind.object_id = ic.object_id and ind.index_id = ic.index_id Inner Join
+			{Destination}.sys.columns col On ic.object_id = col.object_id and ic.column_id = col.column_id Inner Join 
+			{Destination}.sys.tables t On ind.object_id = t.object_id 
 Where		ind.is_primary_key = 0 And
 			ind.is_unique = 0 And
 			ind.is_unique_constraint = 0 And
@@ -431,11 +431,11 @@ If Object_ID ('tempdb.dbo.#TempBase', 'U') Is Not Null Drop Table #TempBase;
 If Object_ID ('tempdb.dbo.#TempDestination', 'U') Is Not Null Drop Table #TempDestination;
 Select * 
 Into #TempBase
-From Watch.INFORMATION_SCHEMA.VIEWS
+From {Base}.INFORMATION_SCHEMA.VIEWS
 
 Select * 
 Into #TempDestination
-From WatchBU.INFORMATION_SCHEMA.VIEWS
+From {Destination}.INFORMATION_SCHEMA.VIEWS
 
 Select Distinct TABLE_NAME
 From	#TempBase
@@ -479,13 +479,13 @@ If Object_ID ('tempdb.dbo.#TempCursor', 'U') Is Not Null Drop Table #TempCursor;
 
 Select	c.*, v.VIEW_DEFINITION 
 Into	#TempBase
-From	Watch.INFORMATION_SCHEMA.VIEWS as v join
-		Watch.INFORMATION_SCHEMA.VIEW_COLUMN_USAGE as c on v.TABLE_NAME=c.VIEW_NAME
+From	{Base}.INFORMATION_SCHEMA.VIEWS as v join
+		{Base}.INFORMATION_SCHEMA.VIEW_COLUMN_USAGE as c on v.TABLE_NAME=c.VIEW_NAME
 
 Select	c.*,v.VIEW_DEFINITION 
 Into	#TempDestination
-From	WatchBU.INFORMATION_SCHEMA.VIEWS as v join
-		WatchBU.INFORMATION_SCHEMA.VIEW_COLUMN_USAGE as c on v.TABLE_NAME=c.VIEW_NAME
+From	{Destination}.INFORMATION_SCHEMA.VIEWS as v join
+		{Destination}.INFORMATION_SCHEMA.VIEW_COLUMN_USAGE as c on v.TABLE_NAME=c.VIEW_NAME
 SELECT * INTO #TempCursor FROM (
 Select	Distinct TABLE_NAME,COLUMN_NAME,VIEW_NAME
 From	#TempBase
@@ -539,11 +539,11 @@ If Object_ID ('tempdb.dbo.#TempDestination', 'U') Is Not Null Drop Table #TempDe
 
 Select * 
 Into #TempBase
-From Watch.INFORMATION_SCHEMA.VIEWS
+From {Base}.INFORMATION_SCHEMA.VIEWS
 
 Select * 
 Into #TempDestination
-From WatchBU.INFORMATION_SCHEMA.VIEWS
+From {Destination}.INFORMATION_SCHEMA.VIEWS
 
 Select Distinct TABLE_NAME
 From	#TempDestination
@@ -592,15 +592,15 @@ If Object_ID ('tempdb.dbo.#TempDestination', 'U') Is Not Null Drop Table #TempDe
 
 Select c.TABLE_CATALOG,c.TABLE_NAME,c.CONSTRAINT_NAME,c.COLUMN_NAME 
 Into	#TempBase
-From	Watch.INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE as c join
-		Watch.INFORMATION_SCHEMA.TABLE_CONSTRAINTS as t
+From	{Base}.INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE as c join
+		{Base}.INFORMATION_SCHEMA.TABLE_CONSTRAINTS as t
 			on c.CONSTRAINT_NAME=t.CONSTRAINT_NAME
 Where	CONSTRAINT_TYPE='PRIMARY KEY'
 
 Select	c.TABLE_CATALOG,c.TABLE_NAME,c.CONSTRAINT_NAME,c.COLUMN_NAME
 Into	#TempDestination
-From	WatchBu.INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE as c join
-		WatchBu.INFORMATION_SCHEMA.TABLE_CONSTRAINTS as t
+From	{Destination}.INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE as c join
+		{Destination}.INFORMATION_SCHEMA.TABLE_CONSTRAINTS as t
 			on c.CONSTRAINT_NAME=t.CONSTRAINT_NAME
 Where	CONSTRAINT_TYPE='PRIMARY KEY'
  
@@ -650,15 +650,15 @@ If Object_ID ('tempdb.dbo.#TempDestination', 'U') Is Not Null Drop Table #TempDe
 
 Select c.TABLE_CATALOG,c.TABLE_NAME,c.CONSTRAINT_NAME,c.COLUMN_NAME 
 Into #TempBase
-From	Watch.INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE as c join
-		Watch.INFORMATION_SCHEMA.TABLE_CONSTRAINTS as t
+From	{Base}.INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE as c join
+		{Base}.INFORMATION_SCHEMA.TABLE_CONSTRAINTS as t
 			on c.CONSTRAINT_NAME=t.CONSTRAINT_NAME
 Where	CONSTRAINT_TYPE='PRIMARY KEY'
 
 Select	c.TABLE_CATALOG,c.TABLE_NAME,c.CONSTRAINT_NAME,c.COLUMN_NAME
 Into	#TempDestination
-From	WatchBu.INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE as c join
-		WatchBu.INFORMATION_SCHEMA.TABLE_CONSTRAINTS as t
+From	{Destination}.INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE as c join
+		{Destination}.INFORMATION_SCHEMA.TABLE_CONSTRAINTS as t
 			on c.CONSTRAINT_NAME=t.CONSTRAINT_NAME
 Where	CONSTRAINT_TYPE='PRIMARY KEY'
 
@@ -713,14 +713,14 @@ Select	obj.name AS FK_NAME,
 		tab2.name AS [referenced_table],
 		col2.name AS [referenced_column]
 Into	#TempBase
-From	Watch.sys.foreign_key_columns fkc Inner Join
-		Watch.sys.objects obj On	obj.object_id = fkc.constraint_object_id Inner Join
-		Watch.sys.tables tab1 On	tab1.object_id = fkc.parent_object_id Inner Join
-		Watch.sys.schemas sch On	tab1.schema_id = sch.schema_id Inner Join
-		Watch.sys.columns col1 On	col1.column_id = parent_column_id And
+From	{Base}.sys.foreign_key_columns fkc Inner Join
+		{Base}.sys.objects obj On	obj.object_id = fkc.constraint_object_id Inner Join
+		{Base}.sys.tables tab1 On	tab1.object_id = fkc.parent_object_id Inner Join
+		{Base}.sys.schemas sch On	tab1.schema_id = sch.schema_id Inner Join
+		{Base}.sys.columns col1 On	col1.column_id = parent_column_id And
 									col1.object_id = tab1.object_id Inner Join
-		Watch.sys.tables tab2 On	tab2.object_id = fkc.referenced_object_id Inner Join
-		Watch.sys.columns col2 On	col2.column_id = referenced_column_id And
+		{Base}.sys.tables tab2 On	tab2.object_id = fkc.referenced_object_id Inner Join
+		{Base}.sys.columns col2 On	col2.column_id = referenced_column_id And
 									col2.object_id = tab2.object_id
 
 Select	obj.name AS FK_NAME,
@@ -730,14 +730,14 @@ Select	obj.name AS FK_NAME,
 		tab2.name AS [referenced_table],
 		col2.name AS [referenced_column]
 Into	#TempDestination
-From	WatchBu.sys.foreign_key_columns fkc Inner Join
-		WatchBu.sys.objects obj On	obj.object_id = fkc.constraint_object_id Inner Join
-		WatchBu.sys.tables tab1 On	tab1.object_id = fkc.parent_object_id Inner Join
-		WatchBu.sys.schemas sch On	tab1.schema_id = sch.schema_id Inner Join
-		WatchBu.sys.columns col1 On	col1.column_id = parent_column_id And
+From	{Destination}.sys.foreign_key_columns fkc Inner Join
+		{Destination}.sys.objects obj On	obj.object_id = fkc.constraint_object_id Inner Join
+		{Destination}.sys.tables tab1 On	tab1.object_id = fkc.parent_object_id Inner Join
+		{Destination}.sys.schemas sch On	tab1.schema_id = sch.schema_id Inner Join
+		{Destination}.sys.columns col1 On	col1.column_id = parent_column_id And
 									col1.object_id = tab1.object_id Inner Join
-		WatchBu.sys.tables tab2 On	tab2.object_id = fkc.referenced_object_id Inner Join
-		WatchBu.sys.columns col2 On col2.column_id = referenced_column_id And
+		{Destination}.sys.tables tab2 On	tab2.object_id = fkc.referenced_object_id Inner Join
+		{Destination}.sys.columns col2 On col2.column_id = referenced_column_id And
 									col2.object_id = tab2.object_id
 
 Select	*
@@ -794,14 +794,14 @@ Select	obj.name AS FK_NAME,
 		tab2.name AS [referenced_table],
 		col2.name AS [referenced_column]
 Into	#TempBase
-From	Watch.sys.foreign_key_columns fkc Inner Join
-		Watch.sys.objects obj On	obj.object_id = fkc.constraint_object_id Inner Join
-		Watch.sys.tables tab1 On	tab1.object_id = fkc.parent_object_id Inner Join
-		Watch.sys.schemas sch On	tab1.schema_id = sch.schema_id Inner Join
-		Watch.sys.columns col1 On	col1.column_id = parent_column_id And
+From	{Base}.sys.foreign_key_columns fkc Inner Join
+		{Base}.sys.objects obj On	obj.object_id = fkc.constraint_object_id Inner Join
+		{Base}.sys.tables tab1 On	tab1.object_id = fkc.parent_object_id Inner Join
+		{Base}.sys.schemas sch On	tab1.schema_id = sch.schema_id Inner Join
+		{Base}.sys.columns col1 On	col1.column_id = parent_column_id And
 									col1.object_id = tab1.object_id Inner Join
-		Watch.sys.tables tab2 On	tab2.object_id = fkc.referenced_object_id Inner Join
-		Watch.sys.columns col2 On	col2.column_id = referenced_column_id And
+		{Base}.sys.tables tab2 On	tab2.object_id = fkc.referenced_object_id Inner Join
+		{Base}.sys.columns col2 On	col2.column_id = referenced_column_id And
 									col2.object_id = tab2.object_id
 Select	obj.name AS FK_NAME,
 		sch.name AS [schema_name],
@@ -810,14 +810,14 @@ Select	obj.name AS FK_NAME,
 		tab2.name AS [referenced_table],
 		col2.name AS [referenced_column]
 Into	#TempDestination
-From	WatchBu.sys.foreign_key_columns fkc Inner Join
-		WatchBu.sys.objects obj On	obj.object_id = fkc.constraint_object_id Inner Join
-		WatchBu.sys.tables tab1 On	tab1.object_id = fkc.parent_object_id Inner Join
-		WatchBu.sys.schemas sch On	tab1.schema_id = sch.schema_id Inner Join
-		WatchBu.sys.columns col1 On	col1.column_id = parent_column_id And
+From	{Destination}.sys.foreign_key_columns fkc Inner Join
+		{Destination}.sys.objects obj On	obj.object_id = fkc.constraint_object_id Inner Join
+		{Destination}.sys.tables tab1 On	tab1.object_id = fkc.parent_object_id Inner Join
+		{Destination}.sys.schemas sch On	tab1.schema_id = sch.schema_id Inner Join
+		{Destination}.sys.columns col1 On	col1.column_id = parent_column_id And
 									col1.object_id = tab1.object_id Inner Join
-		WatchBu.sys.tables tab2 On	tab2.object_id = fkc.referenced_object_id Inner Join
-		WatchBu.sys.columns col2 On	col2.column_id = referenced_column_id And
+		{Destination}.sys.tables tab2 On	tab2.object_id = fkc.referenced_object_id Inner Join
+		{Destination}.sys.columns col2 On	col2.column_id = referenced_column_id And
 									col2.object_id = tab2.object_id
 
 Select	*
@@ -872,10 +872,10 @@ Select		TableName = t.name,
 			ColumnName = col.name,
 			ind.type_desc
 Into		#TempBase
-From		Watch.sys.indexes ind Inner Join 
-			Watch.sys.index_columns ic On ind.object_id = ic.object_id and ind.index_id = ic.index_id Inner Join
-			Watch.sys.columns col On ic.object_id = col.object_id and ic.column_id = col.column_id Inner Join 
-			Watch.sys.tables t On ind.object_id = t.object_id 
+From		{Base}.sys.indexes ind Inner Join 
+			{Base}.sys.index_columns ic On ind.object_id = ic.object_id and ind.index_id = ic.index_id Inner Join
+			{Base}.sys.columns col On ic.object_id = col.object_id and ic.column_id = col.column_id Inner Join 
+			{Base}.sys.tables t On ind.object_id = t.object_id 
 Where		ind.is_primary_key = 0 And
 			ind.is_unique = 0 And
 			ind.is_unique_constraint = 0 And
@@ -889,10 +889,10 @@ Select		TableName = t.name,
 			ColumnName = col.name,
 			ind.type_desc
 Into		#TempDestination
-From		WatchBU.sys.indexes ind Inner Join
-			WatchBU.sys.index_columns ic On ind.object_id = ic.object_id and ind.index_id = ic.index_id Inner Join
-			WatchBU.sys.columns col On ic.object_id = col.object_id and ic.column_id = col.column_id Inner Join
-			WatchBU.sys.tables t On ind.object_id = t.object_id
+From		{Destination}.sys.indexes ind Inner Join
+			{Destination}.sys.index_columns ic On ind.object_id = ic.object_id and ind.index_id = ic.index_id Inner Join
+			{Destination}.sys.columns col On ic.object_id = col.object_id and ic.column_id = col.column_id Inner Join
+			{Destination}.sys.tables t On ind.object_id = t.object_id
 Where		ind.is_primary_key = 0 And
 			ind.is_unique = 0 And
 			ind.is_unique_constraint = 0 And
@@ -960,10 +960,10 @@ If Object_ID ('tempdb.dbo.#TempDestination', 'U') Is Not Null Drop Table #TempDe
 Select		TableName = t.name,
 			IndexName = ind.name
 Into		#TempBase
-From		Watch.sys.indexes ind Inner Join
-			Watch.sys.index_columns ic ON ind.object_id = ic.object_id and ind.index_id = ic.index_id Inner Join
-			Watch.sys.columns col ON ic.object_id = col.object_id and ic.column_id = col.column_id Inner Join
-			Watch.sys.tables t ON ind.object_id = t.object_id
+From		{Base}.sys.indexes ind Inner Join
+			{Base}.sys.index_columns ic ON ind.object_id = ic.object_id and ind.index_id = ic.index_id Inner Join
+			{Base}.sys.columns col ON ic.object_id = col.object_id and ic.column_id = col.column_id Inner Join
+			{Base}.sys.tables t ON ind.object_id = t.object_id
 Where		ind.is_primary_key = 0 AND
 			ind.is_unique = 0 AND
 			ind.is_unique_constraint = 0 AND
@@ -973,10 +973,10 @@ Order By	t.name, ind.name, ind.index_id, ic.is_included_column, ic.key_ordinal;
 Select		TableName = t.name,
 			IndexName = ind.name
 Into		#TempDestination
-From		WatchBU.sys.indexes ind Inner Join 
-			WatchBU.sys.index_columns ic On ind.object_id = ic.object_id and ind.index_id = ic.index_id Inner Join 
-			WatchBU.sys.columns col On ic.object_id = col.object_id and ic.column_id = col.column_id Inner Join
-			WatchBU.sys.tables t On ind.object_id = t.object_id
+From		{Destination}.sys.indexes ind Inner Join 
+			{Destination}.sys.index_columns ic On ind.object_id = ic.object_id and ind.index_id = ic.index_id Inner Join 
+			{Destination}.sys.columns col On ic.object_id = col.object_id and ic.column_id = col.column_id Inner Join
+			{Destination}.sys.tables t On ind.object_id = t.object_id
 Where		ind.is_primary_key = 0 And
 			ind.is_unique = 0 And
 			ind.is_unique_constraint = 0 And
